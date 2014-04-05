@@ -1,0 +1,21 @@
+{
+  "name": "leslie-mvp",
+  "version": "0.1.0",
+  "description": "An isomorphic model-view-presenter framework.",
+  "main": "leslie.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "author": "Curtis Schlak <curtis@curtissimo.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "^0.4.4",
+    "nodeunit": "^0.8.6",
+    "grunt-contrib-nodeunit": "^0.3.3",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-jslint": "^1.1.8"
+  },
+  "dependencies": {
+    "rsvp": "^3.0.6"
+  }
+}
