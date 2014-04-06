@@ -82,6 +82,9 @@ function viewPromise(directive, data, scene) {
       .then(function (catalog) {
         var viewKey = path.relative(cwd, parts.formattedPath);
         code = 404;
+        if (catalog[viewKey] === undefined) {
+          throw new Error('view not in the view catalog');
+        }
         return catalog[viewKey];
       })
       .then(function (view) {
@@ -101,14 +104,14 @@ function viewPromise(directive, data, scene) {
 
 function controllerPromise(directive, scenes) {
   'use strict';
+  var code, format, parts, scene;
+
+  format = path.join(cwd, 'lib', '%s', 'controller');
+  parts = parseDirective(directive, format);
+  scene = scenes();
+  code = 404;
+
   return new rsvp.Promise(function (res, rej) {
-    var code, format, parts, scene;
-
-    format = path.join(cwd, 'lib', '%s', 'controller');
-    parts = parseDirective(directive, format);
-    scene = scenes();
-
-    code = 404;
     stat(parts.formattedFile)
       .then(function () {
         code = 500;
@@ -116,6 +119,9 @@ function controllerPromise(directive, scenes) {
       })
       .then(function (controller) {
         code = 404;
+        if (controller[parts.verb] === undefined) {
+          throw new Error('controller does not have verb');
+        }
         return controller[parts.verb];
       })
       .then(function (method) {
@@ -154,6 +160,7 @@ proto = {
     this.minions = this.minions || {};
     this.minions[name] = helper;
   },
+
   bother: function (directive) {
     'use strict';
     var self = this;
@@ -177,10 +184,14 @@ proto = {
         });
     };
   },
+
   minions: {},
+
   _codeError: codeError,
+  _controllerPromise: controllerPromise,
   _parseDirective: parseDirective,
   _sceneFactory: sceneFactory,
+  _scenePromise: scenePromise,
   _viewPromise: viewPromise
 };
 /*jslint nomen: false*/
