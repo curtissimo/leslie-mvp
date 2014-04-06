@@ -1,4 +1,4 @@
-/*jslint node: true, todo: true*/
+/*jslint node: true*/
 var cwd, fs, leslie, proto, path, rsvp, scene, stat, util;
 
 fs = require('fs');
@@ -22,11 +22,14 @@ function codeError(code, error) {
 
 function sceneFactory(req, helpers) {
   'use strict';
-  // TODO: Implement this method.
-  return {
-    req: req,
-    helpers: helpers
-  };
+  var o = {};
+
+  Object.keys(req.app.settings).forEach(function (key) {
+    o[key] = req.app.settings[key];
+  });
+  o.helpers = helpers || [];
+
+  return o;
 }
 
 function scenePromise(scene, method) {
