@@ -1,88 +1,188 @@
-/*jslint node: true*/
-var leslie, proto, path, scene, rsvp;
+/*jslint node: true, todo: true*/
+var cwd, fs, leslie, proto, path, rsvp, scene, stat, util;
 
+fs = require('fs');
 path = require('path');
 rsvp = require('rsvp');
+util = require('util');
 
-function scene() {
+cwd = process.cwd();
+stat = rsvp.denodeify(fs.stat);
+
+function codeError(code, error) {
   'use strict';
-  var promise, methods;
-  methods = {};
-  promise = new rsvp.Promise(function (resolve, reject) {
-    methods.resolve = resolve;
-    methods.reject = reject;
-  });
-  return Object.create(promise, {
-    done: { value: function (o) { methods.resolve(o); }}
+  if (typeof error === 'string') {
+    error = new Error(error);
+  } else {
+    error = error || new Error();
+  }
+  error.statusCode = code;
+  return error;
+}
+
+function sceneFactory(req, helpers) {
+  'use strict';
+  // TODO: Implement this method.
+  return {
+    req: req,
+    helpers: helpers
+  };
+}
+
+function scenePromise(scene, method) {
+  'use strict';
+  return new rsvp.Promise(function (res, rej) {
+    scene.stage = function (data, controllers) {
+      res({ data: data, controllers: controllers });
+    };
+    scene.cut = function (o) {
+      rej(o);
+    };
+    method(scene);
   });
 }
 
+function parseDirective(directive, format) {
+  'use strict';
+  var args, name, verb, formattedFile, formattedPath, count;
+
+  count = format.match(/%s/g).length;
+  name = directive.split('#');
+  verb = (name[1] || 'get').toLowerCase();
+  name = name[0];
+  args = [ format, name ];
+  if (count > 1) {
+    args.push(verb);
+  }
+  formattedPath = util.format.apply(null, args);
+  formattedFile = formattedPath + '.js';
+
+  return {
+    name: name,
+    formattedFile: formattedFile,
+    formattedPath: formattedPath,
+    verb: verb
+  };
+}
+
+function viewPromise(directive, data, scene) {
+  'use strict';
+  return new rsvp.Promise(function (res, rej) {
+    var code, format, parts;
+
+    format = path.join(cwd, 'lib', '%s', 'views', '%s');
+    parts = parseDirective(directive, format);
+
+    code = 404;
+    stat(parts.formattedFile)
+      .then(function () {
+        code = 500;
+        return require(parts.formattedPath);
+      })
+      .then(function (catalog) {
+        var viewKey = path.relative(cwd, parts.formattedPath);
+        code = 404;
+        return catalog[viewKey];
+      })
+      .then(function (view) {
+        code = 500;
+        return view(data, {
+          helpers: scene.helpers
+        });
+      })
+      .then(function (html) {
+        res(html);
+      })
+      .catch(function (e) {
+        rej(codeError(code, e));
+      });
+  });
+}
+
+function controllerPromise(directive, scenes) {
+  'use strict';
+  return new rsvp.Promise(function (res, rej) {
+    var code, format, parts, scene;
+
+    format = path.join(cwd, 'lib', '%s', 'controller');
+    parts = parseDirective(directive, format);
+    scene = scenes();
+
+    code = 404;
+    stat(parts.formattedFile)
+      .then(function () {
+        code = 500;
+        return require(parts.formattedPath);
+      })
+      .then(function (controller) {
+        code = 404;
+        return controller[parts.verb];
+      })
+      .then(function (method) {
+        code = 500;
+        return scenePromise(scene, method);
+      })
+      .then(function (staging) {
+        var data, controllers;
+
+        data = staging.data;
+        controllers = staging.controllers || {};
+
+        Object.keys(controllers).forEach(function (key) {
+          var value = controllers[key];
+
+          if (typeof value === 'string') {
+            data[key] = controllerPromise(value, scenes);
+          }
+        });
+
+        return rsvp.hash(data);
+      })
+      .then(function (data) {
+        res(viewPromise(directive, data, scene));
+      })
+      .catch(function (e) {
+        rej(codeError(code, e));
+      });
+  });
+}
+
+/*jslint nomen: true*/
 proto = {
-  bother: function (controllerName) {
+  addMinion: function (name, helper) {
     'use strict';
-    var name, method;
-
-    name = controllerName.split('#');
-    if (name.length === 1) {
-      name = name[0];
-    } else {
-      method = name[1];
-      name = name[0];
-    }
-
-    if (name.substring(0, 1) === ':') {
-      name = function (req) {
-        return req.param('controller');
-      };
-    } else {
-      name = (function (name) {
-        return function (req) {
-          req.params.controller = name;
-          return name;
-        };
-      }(name));
-    }
+    this.minions = this.minions || {};
+    this.minions[name] = helper;
+  },
+  bother: function (directive) {
+    'use strict';
+    var self = this;
 
     return function (req, res, next) {
-      var cwd, basePath, controllerPath, viewPath, controller, invocation, view;
+      // Create a scene factory based on the request and helpers
+      var scenes, minions;
 
-      if (method === undefined) {
-        method = req.method;
-      }
-      method = method.toLowerCase();
+      minions = self.minions || {};
+      scenes = sceneFactory.bind(null, req, minions);
 
-      cwd = process.cwd();
-      basePath = path.join(cwd, 'lib', name(req));
-      controllerPath = path.join(basePath, 'controller.js');
-      viewPath = path.join(basePath, 'views', method);
-
-      try {
-        controller = require(controllerPath);
-      } catch (e) {
-        return next();
-      }
-
-      invocation = scene(req, res);
-      controller[method](invocation);
-      invocation.then(function (o) {
-        view = require(viewPath);
-        return o;
-      }).then(function (o) {
-        res.send(200, view[path.relative(cwd, viewPath)](o, {
-          helpers: {
-            pathTo: req.app.pathTo
-          }
-        }));
-      }).catch(function (e) {
-        var message;
-        if (e.code === 'MODULE_NOT_FOUND') {
-          message = 'Could not find "' + path.relative(cwd, viewPath) + '"';
-          return res.send(404, message);
-        }
-        res.send(500, e);
-      });
+      // Get a promise that invokes the controller
+      // Then send the content back if everything is ok
+      // Otherwise, send the error down the pipeline
+      controllerPromise(directive, scenes)
+        .then(function (value) {
+          res.send(200, value);
+        })
+        .catch(function (err) {
+          next(err);
+        });
     };
-  }
+  },
+  minions: {},
+  _codeError: codeError,
+  _parseDirective: parseDirective,
+  _sceneFactory: sceneFactory,
+  _viewPromise: viewPromise
 };
+/*jslint nomen: false*/
 
 leslie = module.exports = Object.create(proto);

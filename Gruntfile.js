@@ -2,11 +2,11 @@ module.exports = function (grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     nodeunit: {
-      dev: [ 'tests/**/*_tests.js' ]
+      dev: [ 'tests/**/*_tests.js', 'leslie.js' ]
     },
     jslint: {
       dev: {
-        src: [ 'leslie.js', 'lib/**/*.js' ],
+        src: [ 'leslie.js' ],
         directives: {
           indent: 2
         }
@@ -14,11 +14,11 @@ module.exports = function (grunt) {
     },
     watch: {
       lint: {
-        files: [ 'leslie.js', 'lib/**/*.js' ],
+        files: [ 'leslie.js' ],
         tasks: [ 'jslint:dev' ]
       },
       test: {
-        files: [ 'tests/**/*_test.js', 'lib/**/*.js' ],
+        files: [ 'tests/**/*_test.js', 'leslie.js' ],
         tasks: [ 'nodeunit:dev' ]
       }
     }
