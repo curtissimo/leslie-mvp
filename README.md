@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/curtissimo/leslie-mvp.svg?branch=master)](https://travis-ci.org/curtissimo/leslie-mvp)
+
 leslie-mvp
 ==========
 
