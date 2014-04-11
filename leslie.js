@@ -1,10 +1,11 @@
 /*jslint node: true*/
-var cwd, fs, leslie, proto, path, rsvp, scene, stat, util;
+var cwd, fs, leslie, proto, path, rsvp, scene, stat, util, url;
 
 fs = require('fs');
 path = require('path');
 rsvp = require('rsvp');
 util = require('util');
+url = require('url');
 
 cwd = process.cwd();
 stat = rsvp.denodeify(fs.stat);
@@ -28,6 +29,7 @@ function sceneFactory(req, helpers) {
     o[key] = req.app.settings[key];
   });
   o.helpers = helpers || [];
+  o.url = url.parse(req.url);
 
   return o;
 }
