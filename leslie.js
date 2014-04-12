@@ -141,7 +141,7 @@ function controllerPromise(directive, scenes) {
       .then(function (staging) {
         var data, controllers;
 
-        data = staging.data;
+        data = staging.data || {};
         controllers = staging.controllers || {};
 
         Object.keys(controllers).forEach(function (key) {
