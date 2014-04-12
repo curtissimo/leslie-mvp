@@ -18,7 +18,9 @@ function codeError(code, error) {
   } else {
     error = error || new Error();
   }
-  error.statusCode = code;
+  if (error.statusCode === undefined) {
+    error.statusCode = code;
+  }
   return error;
 }
 
@@ -42,11 +44,19 @@ function sceneFactory(req, helpers) {
 function scenePromise(scene, method) {
   'use strict';
   return new rsvp.Promise(function (res, rej) {
-    scene.stage = function (data, controllers) {
-      res({ data: data, controllers: controllers });
+    scene.stage = function (view, data, controllers) {
+      if (typeof view !== 'string') {
+        controllers = data;
+        data = view;
+        view = null;
+      }
+      res({ view: view, data: data, controllers: controllers });
     };
     scene.cut = function (o) {
       rej(o);
+    };
+    scene.block = function (href) {
+      rej(codeError(302, new Error(href)));
     };
     method(scene);
   });
@@ -141,6 +151,7 @@ function controllerPromise(directive, scenes) {
       .then(function (staging) {
         var data, controllers;
 
+        scene.view = staging.view;
         data = staging.data || {};
         controllers = staging.controllers || {};
 
@@ -155,6 +166,9 @@ function controllerPromise(directive, scenes) {
         return rsvp.hash(data);
       })
       .then(function (data) {
+        if (scene.view) {
+          directive = [parts.name, scene.view].join('#');
+        }
         res(viewPromise(directive, data, scene));
       })
       .catch(function (e) {
