@@ -130,7 +130,7 @@ function controllerPromise(directive, scenes) {
       .then(function (controller) {
         code = 404;
         if (controller[parts.verb] === undefined) {
-          throw new Error('controller does not have verb');
+          throw new Error('controller does not have verb ' + parts.verb);
         }
         return controller[parts.verb];
       })
@@ -177,19 +177,27 @@ proto = {
 
   bother: function (directive) {
     'use strict';
-    var self = this;
+    var self, controller, method;
+
+    self = this;
+    directive = directive.split('#');
+    if (directive.length == 2) {
+      method = directive[1];
+    }
+    controller = directive[0];
 
     return function (req, res, next) {
       // Create a scene factory based on the request and helpers
-      var scenes, minions;
+      var scenes, minions, invocation;
 
       minions = self.minions || {};
       scenes = sceneFactory.bind(null, req, minions);
+      invocation = [ controller, req.method.toLowerCase() ].join('#');
 
       // Get a promise that invokes the controller
       // Then send the content back if everything is ok
       // Otherwise, send the error down the pipeline
-      controllerPromise(directive, scenes)
+      controllerPromise(invocation, scenes)
         .then(function (value) {
           res.send(200, value);
         })
