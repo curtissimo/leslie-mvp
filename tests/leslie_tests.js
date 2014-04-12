@@ -21,7 +21,7 @@ exports.module = {
   },
 
   'bother returns a function': function (t) {
-    t.strictEqual(typeof leslie.bother(), 'function');
+    t.strictEqual(typeof leslie.bother(''), 'function');
     t.done();
   }
 }

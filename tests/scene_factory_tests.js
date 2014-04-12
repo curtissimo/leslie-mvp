@@ -4,14 +4,24 @@ leslie = require('../leslie');
 
 module.exports = {
   'has settings from req.app': function(t) {
-    var scene, req;
+    var scene, req, res;
 
-    req = { app: { settings: {
-      one: 1,
-      'some thing': /i/
-    }}};
+    req = { 
+      app: {
+        settings: {
+          one: 1,
+          'some thing': /i/
+        }
+      },
+      url: '/i/love?tests=true',
+      param: function () {}
+    };
 
-    scene = leslie._sceneFactory(req);
+    res = {
+      cookie: function () {}
+    }
+
+    scene = leslie._sceneFactory(req, res);
 
     Object.keys(req.app.settings).forEach(function (key) {
       t.ok(scene[key]);

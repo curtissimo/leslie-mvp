@@ -9,7 +9,7 @@ url = require('url');
 
 cwd = process.cwd();
 stat = rsvp.denodeify(fs.stat);
-modifyScene = function (o) { return o; }
+modifyScene = function (o) { 'use strict'; return o; };
 
 function codeError(code, error) {
   'use strict';
@@ -24,7 +24,7 @@ function codeError(code, error) {
   return error;
 }
 
-function sceneFactory(req, helpers) {
+function sceneFactory(req, res, helpers) {
   'use strict';
   var o = {};
 
@@ -34,6 +34,7 @@ function sceneFactory(req, helpers) {
   o.helpers = helpers || [];
   o.url = url.parse(req.url);
   o.param = req.param.bind(req);
+  o.cookie = res.cookie.bind(res);
 
   if (typeof modifyScene === 'function') {
     o = modifyScene(o) || o;
@@ -187,27 +188,31 @@ proto = {
   },
 
   setModifyScene: function (fn) {
+    'use strict';
     modifyScene = fn;
   },
 
   bother: function (directive) {
     'use strict';
-    var self, controller, method;
+    var self, controller;
 
     self = this;
     directive = directive.split('#');
-    if (directive.length == 2) {
-      method = directive[1];
-    }
     controller = directive[0];
 
     return function (req, res, next) {
       // Create a scene factory based on the request and helpers
-      var scenes, minions, invocation;
+      var scenes, minions, invocation, callMethod;
 
+      callMethod = req.method.toLowerCase();
       minions = self.minions || {};
-      scenes = sceneFactory.bind(null, req, minions);
-      invocation = [ controller, req.method.toLowerCase() ].join('#');
+      scenes = sceneFactory.bind(null, req, res, minions);
+
+      if (req.body.__method__) {
+        callMethod = req.body.__method__;
+      }
+
+      invocation = [ controller, callMethod ].join('#');
 
       // Get a promise that invokes the controller
       // Then send the content back if everything is ok
