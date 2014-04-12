@@ -1,5 +1,5 @@
 /*jslint node: true*/
-var cwd, fs, leslie, proto, path, rsvp, scene, stat, util, url;
+var cwd, fs, leslie, proto, path, rsvp, scene, stat, util, url, modifyScene;
 
 fs = require('fs');
 path = require('path');
@@ -9,6 +9,7 @@ url = require('url');
 
 cwd = process.cwd();
 stat = rsvp.denodeify(fs.stat);
+modifyScene = function (o) { return o; }
 
 function codeError(code, error) {
   'use strict';
@@ -30,6 +31,10 @@ function sceneFactory(req, helpers) {
   });
   o.helpers = helpers || [];
   o.url = url.parse(req.url);
+
+  if (typeof modifyScene === 'function') {
+    o = modifyScene(o) || o;
+  }
 
   return o;
 }
@@ -164,6 +169,10 @@ proto = {
     'use strict';
     this.minions = this.minions || {};
     this.minions[name] = helper;
+  },
+
+  setModifyScene: function (fn) {
+    modifyScene = fn;
   },
 
   bother: function (directive) {
