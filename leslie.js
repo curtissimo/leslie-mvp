@@ -33,6 +33,7 @@ function sceneFactory(req, helpers) {
   });
   o.helpers = helpers || [];
   o.url = url.parse(req.url);
+  o.param = req.param.bind(req);
 
   if (typeof modifyScene === 'function') {
     o = modifyScene(o) || o;
@@ -216,6 +217,9 @@ proto = {
           res.send(200, value);
         })
         .catch(function (err) {
+          if (err && err.statusCode === 302) {
+            return res.redirect(err.message);
+          }
           next(err);
         });
     };
