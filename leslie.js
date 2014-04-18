@@ -43,6 +43,7 @@ function sceneFactory(req, res, helpers) {
   };
   o.mergeViewData = function (data) {
     var key;
+    data = data || {};
     for (key in viewData) {
       if (viewData.hasOwnProperty(key) && data[key] === undefined) {
         data[key] = viewData[key];
