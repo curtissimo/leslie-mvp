@@ -6,7 +6,7 @@ module.exports = {
   'has settings from req.app': function(t) {
     var scene, req, res;
 
-    req = { 
+    req = {
       app: {
         settings: {
           one: 1,
@@ -18,7 +18,8 @@ module.exports = {
     };
 
     res = {
-      cookie: function () {}
+      cookie: function () {},
+      clearCookie: function () {}
     }
 
     scene = leslie._sceneFactory(req, res);

@@ -4,7 +4,7 @@ var cwd, fs, leslie, proto, path, rsvp, scene, stat, util, url, modifyScene;
 fs = require('fs');
 path = require('path');
 rsvp = require('rsvp');
-util = require('util');
+util = require('utile');
 url = require('url');
 
 cwd = process.cwd();
@@ -26,7 +26,9 @@ function codeError(code, error) {
 
 function sceneFactory(req, res, helpers) {
   'use strict';
-  var o = {};
+  var viewData, o;
+  o = {};
+  viewData = {};
 
   Object.keys(req.app.settings).forEach(function (key) {
     o[key] = req.app.settings[key];
@@ -35,9 +37,21 @@ function sceneFactory(req, res, helpers) {
   o.url = url.parse(req.url);
   o.param = req.param.bind(req);
   o.cookie = res.cookie.bind(res);
+  o.clearCookie = res.clearCookie.bind(res);
+  o.addViewData = function (data) {
+    util.mixin(viewData, data);
+  };
+  o.mergeViewData = function (data) {
+    var key;
+    for (key in viewData) {
+      if (viewData.hasOwnProperty(key) && data[key] === undefined) {
+        data[key] = viewData[key];
+      }
+    }
+  };
 
   if (typeof modifyScene === 'function') {
-    o = modifyScene(o) || o;
+    o = modifyScene(o, req) || o;
   }
 
   return o;
@@ -51,6 +65,9 @@ function scenePromise(scene, method) {
         controllers = data;
         data = view;
         view = null;
+      }
+      if (typeof scene.mergeViewData === 'function') {
+        scene.mergeViewData(data);
       }
       res({ view: view, data: data, controllers: controllers });
     };

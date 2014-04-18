@@ -12,7 +12,7 @@ module.exports = {
       s.stage(data, controllers);
     };
     scene = {};
-    
+
     leslie._scenePromise(scene, method)
       .then(function (value) {
         t.ok(value);
@@ -34,7 +34,7 @@ module.exports = {
       s.cut(error);
     };
     scene = {};
-    
+
     leslie._scenePromise(scene, method)
       .then(function () {
         t.ok(false, 'scene promise not resolved with stage method');
@@ -43,6 +43,32 @@ module.exports = {
       .catch(function (e) {
         t.ok(e);
         t.strictEqual(e, error);
+        t.done();
+      });
+  },
+
+  'scene#stage calls scene#mergeViewData': function (t) {
+    var controllers, data, method, promise, scene, calledWith;
+
+    controllers = {};
+    data = {};
+    method = function (s) {
+      s.stage(data, controllers);
+    };
+    scene = {
+      mergeViewData: function (data) {
+        calledWith = data;
+      }
+    };
+
+    leslie._scenePromise(scene, method)
+      .then(function (value) {
+        t.ok(value);
+        t.strictEqual(calledWith, data);
+        t.done();
+      })
+      .catch(function () {
+        t.ok(false, 'scene promise not resolved with stage method');
         t.done();
       });
   }
