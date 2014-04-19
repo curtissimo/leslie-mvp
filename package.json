@@ -1,6 +1,6 @@
 {
   "name": "leslie-mvp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "An isomorphic model-view-presenter framework.",
   "main": "leslie.js",
   "scripts": {
