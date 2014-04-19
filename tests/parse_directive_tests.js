@@ -1,4 +1,4 @@
-var cwd, leslie, util;
+var leslie, util;
 
 leslie = require('../leslie');
 util = require('util');

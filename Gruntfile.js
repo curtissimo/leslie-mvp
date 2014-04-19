@@ -18,7 +18,7 @@ module.exports = function (grunt) {
         tasks: [ 'jslint:dev' ]
       },
       test: {
-        files: [ 'tests/**/*_test.js', 'leslie.js' ],
+        files: [ 'tests/**/*_tests.js', 'leslie.js' ],
         tasks: [ 'nodeunit:dev' ]
       }
     }

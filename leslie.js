@@ -1,13 +1,15 @@
-/*jslint node: true, todo: true*/
-var cwd, fs, leslie, proto, path, rsvp, scene, stat, util;
+/*jslint node: true*/
+var cwd, fs, leslie, proto, path, rsvp, scene, stat, util, url, modifyScene;
 
 fs = require('fs');
 path = require('path');
 rsvp = require('rsvp');
-util = require('util');
+util = require('utile');
+url = require('url');
 
 cwd = process.cwd();
 stat = rsvp.denodeify(fs.stat);
+modifyScene = function (o) { 'use strict'; return o; };
 
 function codeError(code, error) {
   'use strict';
@@ -16,27 +18,65 @@ function codeError(code, error) {
   } else {
     error = error || new Error();
   }
-  error.statusCode = code;
+  if (error.statusCode === undefined) {
+    error.statusCode = code;
+  }
   return error;
 }
 
-function sceneFactory(req, helpers) {
+function sceneFactory(req, res, helpers) {
   'use strict';
-  // TODO: Implement this method.
-  return {
-    req: req,
-    helpers: helpers
+  var viewData, o;
+  o = {};
+  viewData = {};
+
+  Object.keys(req.app.settings).forEach(function (key) {
+    o[key] = req.app.settings[key];
+  });
+  o.helpers = helpers || [];
+  o.url = url.parse(req.url);
+  o.param = req.param.bind(req);
+  o.cookie = res.cookie.bind(res);
+  o.clearCookie = res.clearCookie.bind(res);
+  o.addViewData = function (data) {
+    util.mixin(viewData, data);
   };
+  o.mergeViewData = function (data) {
+    var key;
+    for (key in viewData) {
+      if (viewData.hasOwnProperty(key) && data[key] === undefined) {
+        data[key] = viewData[key];
+      }
+    }
+  };
+
+  if (typeof modifyScene === 'function') {
+    o = modifyScene(o, req) || o;
+  }
+
+  return o;
 }
 
 function scenePromise(scene, method) {
   'use strict';
   return new rsvp.Promise(function (res, rej) {
-    scene.stage = function (data, controllers) {
-      res({ data: data, controllers: controllers });
+    scene.stage = function (view, data, controllers) {
+      if (typeof view !== 'string') {
+        controllers = data;
+        data = view;
+        view = null;
+      }
+      if (typeof scene.mergeViewData === 'function') {
+        data = data || {};
+        scene.mergeViewData(data);
+      }
+      res({ view: view, data: data, controllers: controllers });
     };
     scene.cut = function (o) {
       rej(o);
+    };
+    scene.block = function (href) {
+      rej(codeError(302, new Error(href)));
     };
     method(scene);
   });
@@ -82,6 +122,9 @@ function viewPromise(directive, data, scene) {
       .then(function (catalog) {
         var viewKey = path.relative(cwd, parts.formattedPath);
         code = 404;
+        if (catalog[viewKey] === undefined) {
+          throw new Error('view not in the view catalog');
+        }
         return catalog[viewKey];
       })
       .then(function (view) {
@@ -101,14 +144,14 @@ function viewPromise(directive, data, scene) {
 
 function controllerPromise(directive, scenes) {
   'use strict';
+  var code, format, parts, scene;
+
+  format = path.join(cwd, 'lib', '%s', 'controller');
+  parts = parseDirective(directive, format);
+  scene = scenes();
+  code = 404;
+
   return new rsvp.Promise(function (res, rej) {
-    var code, format, parts, scene;
-
-    format = path.join(cwd, 'lib', '%s', 'controller');
-    parts = parseDirective(directive, format);
-    scene = scenes();
-
-    code = 404;
     stat(parts.formattedFile)
       .then(function () {
         code = 500;
@@ -116,6 +159,9 @@ function controllerPromise(directive, scenes) {
       })
       .then(function (controller) {
         code = 404;
+        if (controller[parts.verb] === undefined) {
+          throw new Error('controller does not have verb ' + parts.verb);
+        }
         return controller[parts.verb];
       })
       .then(function (method) {
@@ -125,7 +171,8 @@ function controllerPromise(directive, scenes) {
       .then(function (staging) {
         var data, controllers;
 
-        data = staging.data;
+        scene.view = staging.view;
+        data = staging.data || {};
         controllers = staging.controllers || {};
 
         Object.keys(controllers).forEach(function (key) {
@@ -139,6 +186,9 @@ function controllerPromise(directive, scenes) {
         return rsvp.hash(data);
       })
       .then(function (data) {
+        if (scene.view) {
+          directive = [parts.name, scene.view].join('#');
+        }
         res(viewPromise(directive, data, scene));
       })
       .catch(function (e) {
@@ -154,33 +204,57 @@ proto = {
     this.minions = this.minions || {};
     this.minions[name] = helper;
   },
+
+  setModifyScene: function (fn) {
+    'use strict';
+    modifyScene = fn;
+  },
+
   bother: function (directive) {
     'use strict';
-    var self = this;
+    var self, controller;
+
+    self = this;
+    directive = directive.split('#');
+    controller = directive[0];
 
     return function (req, res, next) {
       // Create a scene factory based on the request and helpers
-      var scenes, minions;
+      var scenes, minions, invocation, callMethod;
 
+      callMethod = req.method.toLowerCase();
       minions = self.minions || {};
-      scenes = sceneFactory.bind(null, req, minions);
+      scenes = sceneFactory.bind(null, req, res, minions);
+
+      if (req.body.__method__) {
+        callMethod = req.body.__method__;
+      }
+
+      invocation = [ controller, callMethod ].join('#');
 
       // Get a promise that invokes the controller
       // Then send the content back if everything is ok
       // Otherwise, send the error down the pipeline
-      controllerPromise(directive, scenes)
+      controllerPromise(invocation, scenes)
         .then(function (value) {
           res.send(200, value);
         })
         .catch(function (err) {
+          if (err && err.statusCode === 302) {
+            return res.redirect(err.message);
+          }
           next(err);
         });
     };
   },
+
   minions: {},
+
   _codeError: codeError,
+  _controllerPromise: controllerPromise,
   _parseDirective: parseDirective,
   _sceneFactory: sceneFactory,
+  _scenePromise: scenePromise,
   _viewPromise: viewPromise
 };
 /*jslint nomen: false*/
