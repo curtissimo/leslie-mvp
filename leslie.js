@@ -78,6 +78,9 @@ function scenePromise(scene, method) {
     scene.block = function (href) {
       rej(codeError(302, new Error(href)));
     };
+    scene.run = function (type, pipe) {
+      res({ type: type, pipe: pipe });
+    };
     method(scene);
   });
 }
@@ -144,12 +147,13 @@ function viewPromise(directive, data, scene) {
 
 function controllerPromise(directive, scenes) {
   'use strict';
-  var code, format, parts, scene;
+  var code, format, parts, scene, pipe;
 
   format = path.join(cwd, 'lib', '%s', 'controller');
   parts = parseDirective(directive, format);
   scene = scenes();
   code = 404;
+  pipe = false;
 
   return new rsvp.Promise(function (res, rej) {
     stat(parts.formattedFile)
@@ -171,6 +175,11 @@ function controllerPromise(directive, scenes) {
       .then(function (staging) {
         var data, controllers;
 
+        if (staging.pipe) {
+          pipe = true;
+          return staging;
+        }
+
         scene.view = staging.view;
         data = staging.data || {};
         controllers = staging.controllers || {};
@@ -186,6 +195,9 @@ function controllerPromise(directive, scenes) {
         return rsvp.hash(data);
       })
       .then(function (data) {
+        if (pipe) {
+          return res(data);
+        }
         if (scene.view) {
           directive = [parts.name, scene.view].join('#');
         }
@@ -237,6 +249,10 @@ proto = {
       // Otherwise, send the error down the pipeline
       controllerPromise(invocation, scenes)
         .then(function (value) {
+          if (value.pipe !== undefined) {
+            res.type(value.type || 'application/octet-stream');
+            return value.pipe(res);
+          }
           res.send(200, value);
         })
         .catch(function (err) {
