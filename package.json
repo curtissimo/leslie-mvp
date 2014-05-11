@@ -13,10 +13,10 @@
     "nodeunit": "^0.8.6",
     "grunt-contrib-nodeunit": "^0.3.3",
     "grunt-contrib-watch": "^0.6.1",
-    "grunt-jslint": "^1.1.8",
-    "utile": "^0.2.1"
+    "grunt-jslint": "^1.1.8"
   },
   "dependencies": {
-    "rsvp": "^3.0.6"
+    "rsvp": "^3.0.6",
+    "utile": "^0.2.1"
   }
 }
