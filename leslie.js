@@ -126,7 +126,7 @@ function viewPromise(directive, data, scene) {
         var viewKey = path.relative(cwd, parts.formattedPath);
         code = 404;
         if (catalog[viewKey] === undefined) {
-          throw new Error('view not in the view catalog');
+          throw new Error('view ' + viewKey + ' not in the view catalog');
         }
         return catalog[viewKey];
       })
@@ -179,9 +179,11 @@ function controllerPromise(directive, scenes) {
           pipe = true;
           return staging;
         }
-
         scene.view = staging.view;
-        data = staging.data || {};
+        data = staging.data;
+        if (data === undefined) {
+          data = {};
+        }
         controllers = staging.controllers || {};
 
         Object.keys(controllers).forEach(function (key) {
@@ -238,7 +240,7 @@ proto = {
       minions = self.minions || {};
       scenes = sceneFactory.bind(null, req, res, minions);
 
-      if (req.body.__method__) {
+      if (req.body && req.body.__method__) {
         callMethod = req.body.__method__;
       }
 
