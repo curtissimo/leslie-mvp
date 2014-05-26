@@ -915,9 +915,7 @@ reject the promise with an appropriately coded error.</p>
         rej(codeError(code, e));
       });
   });
-}
-
-<span class="hljs-comment">/*jslint nomen: true*/</span></pre></div></div>
+}</pre></div></div>
             
         </li>
         
@@ -928,11 +926,9 @@ reject the promise with an appropriately coded error.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-47">&#182;</a>
               </div>
-              <p>Create the prototypical object used by <strong>leslie</strong> to route requests.</p>
+              <h1 id="responding-to-http-requests">Responding to HTTP requests</h1>
 
             </div>
-            
-            <div class="content"><div class='highlight'><pre>proto = {</pre></div></div>
             
         </li>
         
@@ -942,6 +938,22 @@ reject the promise with an appropriately coded error.</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-48">&#182;</a>
+              </div>
+              <p>Create the prototypical object used by <strong>leslie</strong> to route requests.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/*jslint nomen: true*/</span>
+proto = {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-49">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-49">&#182;</a>
               </div>
               <p><code>leslie.addMinion</code> allows applications to register global view helpers.</p>
 
@@ -956,11 +968,11 @@ reject the promise with an appropriately coded error.</p>
         </li>
         
         
-        <li id="section-49">
+        <li id="section-50">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-49">&#182;</a>
+                <a class="pilcrow" href="#section-50">&#182;</a>
               </div>
               <p><code>leslie.setModifyScene</code> registers the application-specific callback invoked
 by <strong>leslie</strong> for every scene creation.</p>
@@ -975,11 +987,11 @@ by <strong>leslie</strong> for every scene creation.</p>
         </li>
         
         
-        <li id="section-50">
+        <li id="section-51">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-50">&#182;</a>
+                <a class="pilcrow" href="#section-51">&#182;</a>
               </div>
               <p><code>leslie.bother</code> returns an express-compatible method for handling requests.
 It registers the method for the specific directive of format
