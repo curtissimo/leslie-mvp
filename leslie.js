@@ -326,8 +326,10 @@ function controllerPromise(directive, scenes) {
   });
 }
 
-/*jslint nomen: true*/
+// # Responding to HTTP requests
+
 // Create the prototypical object used by **leslie** to route requests.
+/*jslint nomen: true*/
 proto = {
   // `leslie.addMinion` allows applications to register global view helpers.
   addMinion: function (name, helper) {
