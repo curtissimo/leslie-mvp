@@ -157,14 +157,20 @@ function scenePromise(scene, method) {
     scene.block = function (href) {
       rej(codeError(302, new Error(href)));
     };
+    // `scene.seen` provides the presenter with a way to indicate that its
+    // content has not changed since the last request.
+    scene.seen = function () {
+      rej(codeError(304, new Error()));
+    };
     // `scene.run` provides the presenter with a way to pipe a stream back to
     // the client.
     //
     // * `type` indicates the `Content-Type` of the reseponse.
     // * `pipe` contains the object that has a `pipe(OutputStream)` method on
     //    it to stream the content back to the client.
-    scene.run = function (type, pipe) {
-      res({ type: type, pipe: pipe });
+    // * `md5` contains an optional md5 hash of the content of the pipe.
+    scene.run = function (type, pipe, md5) {
+      res({ type: type, pipe: pipe, md5: md5 });
     };
     method(scene);
   });
@@ -374,7 +380,12 @@ proto = {
       controllerPromise(invocation, scenes)
         .then(function (value) {
           if (value.pipe !== undefined) {
-            res.type(value.type || 'application/octet-stream');
+            if (value.md5) {
+              res.set('cache-control', 'public, max-age=31536000');
+              res.set('etag', value.md5);
+              res.set('content-type', value.type || 'application/octet-stream');
+            }
+            res.setHeader = false;
             return value.pipe(res);
           }
           res.send(200, value);
@@ -382,6 +393,9 @@ proto = {
         .catch(function (err) {
           if (err && err.statusCode === 302) {
             return res.redirect(err.message);
+          }
+          if (err && err.statusCode === 304) {
+            return res.status(304).send('');
           }
           next(err);
         });
