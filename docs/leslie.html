@@ -404,22 +404,14 @@ should redirect to another URL.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-19">&#182;</a>
               </div>
-              <p><code>scene.run</code> provides the presenter with a way to pipe a stream back to
-the client.</p>
-<ul>
-<li><code>type</code> indicates the <code>Content-Type</code> of the reseponse.</li>
-<li><code>pipe</code> contains the object that has a <code>pipe(OutputStream)</code> method on
- it to stream the content back to the client.</li>
-</ul>
+              <p><code>scene.seen</code> provides the presenter with a way to indicate that its
+content has not changed since the last request.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    scene.run = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(type, pipe)</span> {</span>
-      res({ type: type, pipe: pipe });
-    };
-    method(scene);
-  });
-}</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    scene.seen = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+      rej(codeError(<span class="hljs-number">304</span>, <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>()));
+    };</pre></div></div>
             
         </li>
         
@@ -430,11 +422,23 @@ the client.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-20">&#182;</a>
               </div>
-              <h1 id="views">Views</h1>
-<p>Views represent some package of JavaScript functionality that <strong>leslie</strong>
-invokes to generate HTML for the client.</p>
+              <p><code>scene.run</code> provides the presenter with a way to pipe a stream back to
+the client.</p>
+<ul>
+<li><code>type</code> indicates the <code>Content-Type</code> of the reseponse.</li>
+<li><code>pipe</code> contains the object that has a <code>pipe(OutputStream)</code> method on
+ it to stream the content back to the client.</li>
+<li><code>md5</code> contains an optional md5 hash of the content of the pipe.</li>
+</ul>
 
             </div>
+            
+            <div class="content"><div class='highlight'><pre>    scene.run = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(type, pipe, md5)</span> {</span>
+      res({ type: type, pipe: pipe, md5: md5 });
+    };
+    method(scene);
+  });
+}</pre></div></div>
             
         </li>
         
@@ -444,6 +448,21 @@ invokes to generate HTML for the client.</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <h1 id="views">Views</h1>
+<p>Views represent some package of JavaScript functionality that <strong>leslie</strong>
+invokes to generate HTML for the client.</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
               <h2 id="views-as-promises">Views as promises</h2>
 <p><strong>leslie</strong> uses promises to find, load, and render views. This method creates
@@ -459,11 +478,11 @@ those promsises.</p>
         </li>
         
         
-        <li id="section-22">
+        <li id="section-23">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-22">&#182;</a>
+                <a class="pilcrow" href="#section-23">&#182;</a>
               </div>
               <p>Find the path to the correct view module.</p>
 
@@ -475,11 +494,11 @@ those promsises.</p>
         </li>
         
         
-        <li id="section-23">
+        <li id="section-24">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-23">&#182;</a>
+                <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
               <p>Prime the error code with “Not Found”.</p>
 
@@ -490,11 +509,11 @@ those promsises.</p>
         </li>
         
         
-        <li id="section-24">
+        <li id="section-25">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-24">&#182;</a>
+                <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
               <p>Ask that the file exists. If it does, …</p>
 
@@ -505,11 +524,11 @@ those promsises.</p>
         </li>
         
         
-        <li id="section-25">
+        <li id="section-26">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-25">&#182;</a>
+                <a class="pilcrow" href="#section-26">&#182;</a>
               </div>
               <p>… then set the error code to “Internal Error” and laod the view
 module. If that succeeds, …</p>
@@ -524,11 +543,11 @@ module. If that succeeds, …</p>
         </li>
         
         
-        <li id="section-26">
+        <li id="section-27">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-26">&#182;</a>
+                <a class="pilcrow" href="#section-27">&#182;</a>
               </div>
               <p>… then get the key for the view and set the error code to “Not
 Found”. If the key exists, …</p>
@@ -547,11 +566,11 @@ Found”. If the key exists, …</p>
         </li>
         
         
-        <li id="section-27">
+        <li id="section-28">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-27">&#182;</a>
+                <a class="pilcrow" href="#section-28">&#182;</a>
               </div>
               <p>… then set the error code to “Internal Error” and render the view. If
 the view renders without error, …</p>
@@ -568,11 +587,11 @@ the view renders without error, …</p>
         </li>
         
         
-        <li id="section-28">
+        <li id="section-29">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-28">&#182;</a>
+                <a class="pilcrow" href="#section-29">&#182;</a>
               </div>
               <p>… then accept the promise with the generated HTML; otherwise, …</p>
 
@@ -585,11 +604,11 @@ the view renders without error, …</p>
         </li>
         
         
-        <li id="section-29">
+        <li id="section-30">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-29">&#182;</a>
+                <a class="pilcrow" href="#section-30">&#182;</a>
               </div>
               <p>… for any error that occurred along the promise resolution pipeline,
 reject the promise with an appropriately coded error.</p>
@@ -605,11 +624,11 @@ reject the promise with an appropriately coded error.</p>
         </li>
         
         
-        <li id="section-30">
+        <li id="section-31">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-30">&#182;</a>
+                <a class="pilcrow" href="#section-31">&#182;</a>
               </div>
               <h1 id="presenters">Presenters</h1>
 <p>Presenters represent the coördinators of model and view. This is the P in
@@ -620,11 +639,11 @@ MVP.</p>
         </li>
         
         
-        <li id="section-31">
+        <li id="section-32">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-31">&#182;</a>
+                <a class="pilcrow" href="#section-32">&#182;</a>
               </div>
               <h2 id="presenters-as-promises">Presenters as promises</h2>
 <p><strong>leslie</strong> uses promsies to find and load presenter objects and coördinate
@@ -639,11 +658,11 @@ the invocation of the associated views. This method creates those promsises.</p>
         </li>
         
         
-        <li id="section-32">
+        <li id="section-33">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-32">&#182;</a>
+                <a class="pilcrow" href="#section-33">&#182;</a>
               </div>
               <p>Find the path to the correct presenter module.</p>
 
@@ -655,11 +674,11 @@ the invocation of the associated views. This method creates those promsises.</p>
         </li>
         
         
-        <li id="section-33">
+        <li id="section-34">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-33">&#182;</a>
+                <a class="pilcrow" href="#section-34">&#182;</a>
               </div>
               <p>Generate a scene from the supplied scene factory.</p>
 
@@ -670,11 +689,11 @@ the invocation of the associated views. This method creates those promsises.</p>
         </li>
         
         
-        <li id="section-34">
+        <li id="section-35">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-34">&#182;</a>
+                <a class="pilcrow" href="#section-35">&#182;</a>
               </div>
               <p>Prime the error code to “Not Found”.</p>
 
@@ -685,11 +704,11 @@ the invocation of the associated views. This method creates those promsises.</p>
         </li>
         
         
-        <li id="section-35">
+        <li id="section-36">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-35">&#182;</a>
+                <a class="pilcrow" href="#section-36">&#182;</a>
               </div>
               <p>Default the request to a non-piped response.</p>
 
@@ -702,11 +721,11 @@ the invocation of the associated views. This method creates those promsises.</p>
         </li>
         
         
-        <li id="section-36">
+        <li id="section-37">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-36">&#182;</a>
+                <a class="pilcrow" href="#section-37">&#182;</a>
               </div>
               <p>Ask that the file exists. If it does, …</p>
 
@@ -717,11 +736,11 @@ the invocation of the associated views. This method creates those promsises.</p>
         </li>
         
         
-        <li id="section-37">
+        <li id="section-38">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-37">&#182;</a>
+                <a class="pilcrow" href="#section-38">&#182;</a>
               </div>
               <p>… then set the error code to “Internal Error” and laod the presenter
 module. If that succeeds, …</p>
@@ -736,11 +755,11 @@ module. If that succeeds, …</p>
         </li>
         
         
-        <li id="section-38">
+        <li id="section-39">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-38">&#182;</a>
+                <a class="pilcrow" href="#section-39">&#182;</a>
               </div>
               <p>… then get the key for the presenter’s method to invoke and set the
 error code to “Not Found”. If the key exists, then return the method
@@ -759,11 +778,11 @@ for the verb and …</p>
         </li>
         
         
-        <li id="section-39">
+        <li id="section-40">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-39">&#182;</a>
+                <a class="pilcrow" href="#section-40">&#182;</a>
               </div>
               <p>… create a scene promise with the newly-created scene and the method
 for the presenter. Set the error code to “Internal Error”. Return the
@@ -779,11 +798,11 @@ scene promise, …</p>
         </li>
         
         
-        <li id="section-40">
+        <li id="section-41">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-40">&#182;</a>
+                <a class="pilcrow" href="#section-41">&#182;</a>
               </div>
               <p>… then collect the staged information from the scene:</p>
 
@@ -795,11 +814,11 @@ scene promise, …</p>
         </li>
         
         
-        <li id="section-41">
+        <li id="section-42">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-41">&#182;</a>
+                <a class="pilcrow" href="#section-42">&#182;</a>
               </div>
               <ul>
 <li>If the response should be piped, return the piped object</li>
@@ -815,11 +834,11 @@ scene promise, …</p>
         </li>
         
         
-        <li id="section-42">
+        <li id="section-43">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-42">&#182;</a>
+                <a class="pilcrow" href="#section-43">&#182;</a>
               </div>
               <ul>
 <li>Normalize the view, data, and presenters from the scene.</li>
@@ -837,11 +856,11 @@ scene promise, …</p>
         </li>
         
         
-        <li id="section-43">
+        <li id="section-44">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-43">&#182;</a>
+                <a class="pilcrow" href="#section-44">&#182;</a>
               </div>
               <ul>
 <li>For each dependent presenter, create a promise to invoke it.</li>
@@ -860,11 +879,11 @@ scene promise, …</p>
         </li>
         
         
-        <li id="section-44">
+        <li id="section-45">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-44">&#182;</a>
+                <a class="pilcrow" href="#section-45">&#182;</a>
               </div>
               <p>Return the data with any promised controllers rendered, as well.</p>
 
@@ -876,11 +895,11 @@ scene promise, …</p>
         </li>
         
         
-        <li id="section-45">
+        <li id="section-46">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-45">&#182;</a>
+                <a class="pilcrow" href="#section-46">&#182;</a>
               </div>
               <p>With all of the rendered dependent views, return a view promise that
 for the presenter.</p>
@@ -900,11 +919,11 @@ for the presenter.</p>
         </li>
         
         
-        <li id="section-46">
+        <li id="section-47">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-46">&#182;</a>
+                <a class="pilcrow" href="#section-47">&#182;</a>
               </div>
               <p>For any error that occurred along the promise resolution pipeline,
 reject the promise with an appropriately coded error.</p>
@@ -920,11 +939,11 @@ reject the promise with an appropriately coded error.</p>
         </li>
         
         
-        <li id="section-47">
+        <li id="section-48">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-47">&#182;</a>
+                <a class="pilcrow" href="#section-48">&#182;</a>
               </div>
               <h1 id="responding-to-http-requests">Responding to HTTP requests</h1>
 
@@ -933,11 +952,11 @@ reject the promise with an appropriately coded error.</p>
         </li>
         
         
-        <li id="section-48">
+        <li id="section-49">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-48">&#182;</a>
+                <a class="pilcrow" href="#section-49">&#182;</a>
               </div>
               <p>Create the prototypical object used by <strong>leslie</strong> to route requests.</p>
 
@@ -949,11 +968,11 @@ proto = {</pre></div></div>
         </li>
         
         
-        <li id="section-49">
+        <li id="section-50">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-49">&#182;</a>
+                <a class="pilcrow" href="#section-50">&#182;</a>
               </div>
               <p><code>leslie.addMinion</code> allows applications to register global view helpers.</p>
 
@@ -968,11 +987,11 @@ proto = {</pre></div></div>
         </li>
         
         
-        <li id="section-50">
+        <li id="section-51">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-50">&#182;</a>
+                <a class="pilcrow" href="#section-51">&#182;</a>
               </div>
               <p><code>leslie.setModifyScene</code> registers the application-specific callback invoked
 by <strong>leslie</strong> for every scene creation.</p>
@@ -987,11 +1006,11 @@ by <strong>leslie</strong> for every scene creation.</p>
         </li>
         
         
-        <li id="section-51">
+        <li id="section-52">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-51">&#182;</a>
+                <a class="pilcrow" href="#section-52">&#182;</a>
               </div>
               <p><code>leslie.bother</code> returns an express-compatible method for handling requests.
 It registers the method for the specific directive of format
@@ -1024,7 +1043,12 @@ It registers the method for the specific directive of format
       controllerPromise(invocation, scenes)
         .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(value)</span> {</span>
           <span class="hljs-keyword">if</span> (value.pipe !== <span class="hljs-literal">undefined</span>) {
-            res.type(value.type || <span class="hljs-string">'application/octet-stream'</span>);
+            <span class="hljs-keyword">if</span> (value.md5) {
+              res.set(<span class="hljs-string">'cache-control'</span>, <span class="hljs-string">'public, max-age=31536000'</span>);
+              res.set(<span class="hljs-string">'etag'</span>, value.md5);
+              res.set(<span class="hljs-string">'content-type'</span>, value.type || <span class="hljs-string">'application/octet-stream'</span>);
+            }
+            res.setHeader = <span class="hljs-literal">false</span>;
             <span class="hljs-keyword">return</span> value.pipe(res);
           }
           res.send(<span class="hljs-number">200</span>, value);
@@ -1032,6 +1056,9 @@ It registers the method for the specific directive of format
         .catch(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(err)</span> {</span>
           <span class="hljs-keyword">if</span> (err &amp;&amp; err.statusCode === <span class="hljs-number">302</span>) {
             <span class="hljs-keyword">return</span> res.redirect(err.message);
+          }
+          <span class="hljs-keyword">if</span> (err &amp;&amp; err.statusCode === <span class="hljs-number">304</span>) {
+            <span class="hljs-keyword">return</span> res.status(<span class="hljs-number">304</span>).send(<span class="hljs-string">''</span>);
           }
           next(err);
         });
