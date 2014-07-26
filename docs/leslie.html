@@ -59,7 +59,7 @@ url = <span class="hljs-built_in">require</span>(<span class="hljs-string">'url'
 
 cwd = process.cwd();
 stat = rsvp.denodeify(fs.stat);
-modifyScene = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(o)</span> {</span> <span class="hljs-string">'use strict'</span>; <span class="hljs-keyword">return</span> o; };</pre></div></div>
+modifyScene = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(o)</span> </span>{ <span class="hljs-string">'use strict'</span>; <span class="hljs-keyword">return</span> o; };</pre></div></div>
             
         </li>
         
@@ -75,7 +75,7 @@ use in the HTTP-handling stack.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">codeError</span><span class="hljs-params">(code, error)</span> {</span>
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">codeError</span><span class="hljs-params">(code, error)</span> </span>{
 <span class="hljs-pi">  'use strict'</span>;
   <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> error === <span class="hljs-string">'string'</span>) {
     error = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(error);
@@ -103,7 +103,7 @@ some other format.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">parseDirective</span><span class="hljs-params">(directive, format)</span> {</span>
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">parseDirective</span><span class="hljs-params">(directive, format)</span> </span>{
 <span class="hljs-pi">  'use strict'</span>;
   <span class="hljs-keyword">var</span> args, name, verb, formattedFile, formattedPath, count;
 
@@ -160,7 +160,7 @@ based on the request, response, and global helpers registered with
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sceneFactory</span><span class="hljs-params">(req, res, helpers)</span> {</span>
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sceneFactory</span><span class="hljs-params">(req, res, helpers)</span> </span>{
 <span class="hljs-pi">  'use strict'</span>;
   <span class="hljs-keyword">var</span> viewData, o;
   o = {};
@@ -179,7 +179,7 @@ based on the request, response, and global helpers registered with
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-built_in">Object</span>.keys(req.app.settings).forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(key)</span> {</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-built_in">Object</span>.keys(req.app.settings).forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(key)</span> </span>{
     o[key] = req.app.settings[key];
   });</pre></div></div>
             
@@ -258,10 +258,10 @@ presenter can benefit.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  o.addViewData = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(data)</span> {</span>
+            <div class="content"><div class='highlight'><pre>  o.addViewData = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(data)</span> </span>{
     util.mixin(viewData, data);
   };
-  o.mergeViewData = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(data)</span> {</span>
+  o.mergeViewData = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(data)</span> </span>{
     <span class="hljs-keyword">var</span> key;
     <span class="hljs-keyword">for</span> (key <span class="hljs-keyword">in</span> viewData) {
       <span class="hljs-keyword">if</span> (viewData.hasOwnProperty(key) &amp;&amp; data[key] === <span class="hljs-literal">undefined</span>) {
@@ -318,9 +318,9 @@ the scene using semantically rich methods as opposed to configuration blocks.</p
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">scenePromise</span><span class="hljs-params">(scene, method)</span> {</span>
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">scenePromise</span><span class="hljs-params">(scene, method)</span> </span>{
 <span class="hljs-pi">  'use strict'</span>;
-  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> rsvp.Promise(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(res, rej)</span> {</span></pre></div></div>
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> rsvp.Promise(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(res, rej)</span> </span>{</pre></div></div>
             
         </li>
         
@@ -346,7 +346,7 @@ presenter’s render run.</li>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    scene.stage = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(view, data, controllers)</span> {</span>
+            <div class="content"><div class='highlight'><pre>    scene.stage = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(view, data, controllers)</span> </span>{
       <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> view !== <span class="hljs-string">'string'</span>) {
         controllers = data;
         data = view;
@@ -373,7 +373,7 @@ to the client.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    scene.cut = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(o)</span> {</span>
+            <div class="content"><div class='highlight'><pre>    scene.cut = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(o)</span> </span>{
       rej(o);
     };</pre></div></div>
             
@@ -391,7 +391,7 @@ should redirect to another URL.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    scene.block = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(href)</span> {</span>
+            <div class="content"><div class='highlight'><pre>    scene.block = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(href)</span> </span>{
       rej(codeError(<span class="hljs-number">302</span>, <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(href)));
     };</pre></div></div>
             
@@ -409,7 +409,7 @@ content has not changed since the last request.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    scene.seen = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+            <div class="content"><div class='highlight'><pre>    scene.seen = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
       rej(codeError(<span class="hljs-number">304</span>, <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>()));
     };</pre></div></div>
             
@@ -433,7 +433,7 @@ the client.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    scene.run = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(type, pipe, md5)</span> {</span>
+            <div class="content"><div class='highlight'><pre>    scene.run = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(type, pipe, md5)</span> </span>{
       res({ type: type, pipe: pipe, md5: md5 });
     };
     method(scene);
@@ -470,9 +470,9 @@ those promsises.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">viewPromise</span><span class="hljs-params">(directive, data, scene)</span> {</span>
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">viewPromise</span><span class="hljs-params">(directive, data, scene)</span> </span>{
 <span class="hljs-pi">  'use strict'</span>;
-  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> rsvp.Promise(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(res, rej)</span> {</span>
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> rsvp.Promise(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(res, rej)</span> </span>{
     <span class="hljs-keyword">var</span> code, format, parts;</pre></div></div>
             
         </li>
@@ -535,7 +535,7 @@ module. If that succeeds, …</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+            <div class="content"><div class='highlight'><pre>      .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
         code = <span class="hljs-number">500</span>;
         <span class="hljs-keyword">return</span> <span class="hljs-built_in">require</span>(parts.formattedPath);
       })</pre></div></div>
@@ -554,7 +554,7 @@ Found”. If the key exists, …</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(catalog)</span> {</span>
+            <div class="content"><div class='highlight'><pre>      .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(catalog)</span> </span>{
         <span class="hljs-keyword">var</span> viewKey = path.relative(cwd, parts.formattedPath);
         code = <span class="hljs-number">404</span>;
         <span class="hljs-keyword">if</span> (catalog[viewKey] === <span class="hljs-literal">undefined</span>) {
@@ -577,7 +577,7 @@ the view renders without error, …</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(view)</span> {</span>
+            <div class="content"><div class='highlight'><pre>      .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(view)</span> </span>{
         code = <span class="hljs-number">500</span>;
         <span class="hljs-keyword">return</span> view(data, {
           helpers: scene.helpers
@@ -597,7 +597,7 @@ the view renders without error, …</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(html)</span> {</span>
+            <div class="content"><div class='highlight'><pre>      .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(html)</span> </span>{
         res(html);
       })</pre></div></div>
             
@@ -615,7 +615,7 @@ reject the promise with an appropriately coded error.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      .catch(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e)</span> {</span>
+            <div class="content"><div class='highlight'><pre>      .catch(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e)</span> </span>{
         rej(codeError(code, e));
       });
   });
@@ -651,7 +651,7 @@ the invocation of the associated views. This method creates those promsises.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">controllerPromise</span><span class="hljs-params">(directive, scenes)</span> {</span>
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">controllerPromise</span><span class="hljs-params">(directive, scenes)</span> </span>{
 <span class="hljs-pi">  'use strict'</span>;
   <span class="hljs-keyword">var</span> code, format, parts, scene, pipe;</pre></div></div>
             
@@ -716,7 +716,7 @@ the invocation of the associated views. This method creates those promsises.</p>
             
             <div class="content"><div class='highlight'><pre>  pipe = <span class="hljs-literal">false</span>;
 
-  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> rsvp.Promise(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(res, rej)</span> {</span></pre></div></div>
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> rsvp.Promise(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(res, rej)</span> </span>{</pre></div></div>
             
         </li>
         
@@ -747,7 +747,7 @@ module. If that succeeds, …</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+            <div class="content"><div class='highlight'><pre>      .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
         code = <span class="hljs-number">500</span>;
         <span class="hljs-keyword">return</span> <span class="hljs-built_in">require</span>(parts.formattedPath);
       })</pre></div></div>
@@ -767,7 +767,7 @@ for the verb and …</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(controller)</span> {</span>
+            <div class="content"><div class='highlight'><pre>      .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(controller)</span> </span>{
         code = <span class="hljs-number">404</span>;
         <span class="hljs-keyword">if</span> (controller[parts.verb] === <span class="hljs-literal">undefined</span>) {
           <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'controller does not have verb '</span> + parts.verb);
@@ -790,7 +790,7 @@ scene promise, …</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(method)</span> {</span>
+            <div class="content"><div class='highlight'><pre>      .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(method)</span> </span>{
         code = <span class="hljs-number">500</span>;
         <span class="hljs-keyword">return</span> scenePromise(scene, method);
       })</pre></div></div>
@@ -808,7 +808,7 @@ scene promise, …</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(staging)</span> {</span>
+            <div class="content"><div class='highlight'><pre>      .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(staging)</span> </span>{
         <span class="hljs-keyword">var</span> data, controllers;</pre></div></div>
             
         </li>
@@ -868,7 +868,7 @@ scene promise, …</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        <span class="hljs-built_in">Object</span>.keys(controllers).forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(key)</span> {</span>
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-built_in">Object</span>.keys(controllers).forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(key)</span> </span>{
           <span class="hljs-keyword">var</span> value = controllers[key];
 
           <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> value === <span class="hljs-string">'string'</span>) {
@@ -906,7 +906,7 @@ for the presenter.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(data)</span> {</span>
+            <div class="content"><div class='highlight'><pre>      .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(data)</span> </span>{
         <span class="hljs-keyword">if</span> (pipe) {
           <span class="hljs-keyword">return</span> res(data);
         }
@@ -930,7 +930,7 @@ reject the promise with an appropriately coded error.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      .catch(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e)</span> {</span>
+            <div class="content"><div class='highlight'><pre>      .catch(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e)</span> </span>{
         rej(codeError(code, e));
       });
   });
@@ -978,7 +978,7 @@ proto = {</pre></div></div>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  addMinion: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(name, helper)</span> {</span>
+            <div class="content"><div class='highlight'><pre>  addMinion: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(name, helper)</span> </span>{
 <span class="hljs-pi">    'use strict'</span>;
     <span class="hljs-keyword">this</span>.minions = <span class="hljs-keyword">this</span>.minions || {};
     <span class="hljs-keyword">this</span>.minions[name] = helper;
@@ -998,7 +998,7 @@ by <strong>leslie</strong> for every scene creation.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  setModifyScene: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(fn)</span> {</span>
+            <div class="content"><div class='highlight'><pre>  setModifyScene: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(fn)</span> </span>{
 <span class="hljs-pi">    'use strict'</span>;
     modifyScene = fn;
   },</pre></div></div>
@@ -1019,7 +1019,7 @@ It registers the method for the specific directive of format
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>  bother: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(directive)</span> {</span>
+            <div class="content"><div class='highlight'><pre>  bother: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(directive)</span> </span>{
 <span class="hljs-pi">    'use strict'</span>;
     <span class="hljs-keyword">var</span> self, controller;
 
@@ -1027,7 +1027,7 @@ It registers the method for the specific directive of format
     directive = directive.split(<span class="hljs-string">'#'</span>);
     controller = directive[<span class="hljs-number">0</span>];
 
-    <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(req, res, next)</span> {</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(req, res, next)</span> </span>{
       <span class="hljs-keyword">var</span> scenes, minions, invocation, callMethod;
 
       callMethod = req.method.toLowerCase();
@@ -1041,7 +1041,7 @@ It registers the method for the specific directive of format
       invocation = [ controller, callMethod ].join(<span class="hljs-string">'#'</span>);
 
       controllerPromise(invocation, scenes)
-        .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(value)</span> {</span>
+        .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(value)</span> </span>{
           <span class="hljs-keyword">if</span> (value.pipe !== <span class="hljs-literal">undefined</span>) {
             <span class="hljs-keyword">if</span> (value.md5) {
               res.set(<span class="hljs-string">'cache-control'</span>, <span class="hljs-string">'public, max-age=31536000'</span>);
@@ -1053,7 +1053,7 @@ It registers the method for the specific directive of format
           }
           res.send(<span class="hljs-number">200</span>, value);
         })
-        .catch(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(err)</span> {</span>
+        .catch(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(err)</span> </span>{
           <span class="hljs-keyword">if</span> (err &amp;&amp; err.statusCode === <span class="hljs-number">302</span>) {
             <span class="hljs-keyword">return</span> res.redirect(err.message);
           }
@@ -1076,7 +1076,7 @@ It registers the method for the specific directive of format
 };
 <span class="hljs-comment">/*jslint nomen: false*/</span>
 
-leslie = module.exports = <span class="hljs-built_in">Object</span>.create(proto);</pre></div></div>
+leslie = <span class="hljs-built_in">module</span>.exports = <span class="hljs-built_in">Object</span>.create(proto);</pre></div></div>
             
         </li>
         
