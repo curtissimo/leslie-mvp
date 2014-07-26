@@ -23,6 +23,8 @@
     "grunt-jslint": "^1.1.12",
     "gulp": "^3.8.6",
     "gulp-docco": "0.0.4",
+    "gulp-jslint": "^0.1.6",
+    "gulp-nodeunit": "0.0.5",
     "nodeunit": "^0.9.0"
   },
   "dependencies": {
