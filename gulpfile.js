@@ -33,4 +33,5 @@ gulp.task('watch', function () {
   gulp.watch('./gulpfile.js', [ 'lint' ]);
 });
 
-gulp.task('dev', ['test', 'lint', 'watch']);
+gulp.task('dev', [ 'test', 'lint', 'watch' ]);
+gulp.task('ci', [ 'test', 'lint' ]);
