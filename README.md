@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/curtissimo/leslie-mvp.svg?branch=develop)](https://travis-ci.org/curtissimo/leslie-mvp) [![Dependency Status](https://gemnasium.com/curtissimo/stork.svg)](https://gemnasium.com/curtissimo/stork)
+[![Build Status](https://travis-ci.org/curtissimo/leslie-mvp.svg?branch=develop)](https://travis-ci.org/curtissimo/leslie-mvp) [![Dependency Status](https://gemnasium.com/curtissimo/leslie-mvp.svg)](https://gemnasium.com/curtissimo/leslie-mvp)
 
 leslie-mvp
 ==========
